@@ -68,9 +68,9 @@
     .nav-logo .logo-sub { font-size: 11px; color: var(--text-soft); }
 
     .nav-tabs {
-      display: flex; gap: 2px; list-style: none;
+      display: flex; gap: 2px; list-style: none; align-items: center;
     }
-    .nav-tabs button {
+    .nav-tabs > li > button {
       background: none; border: none; cursor: pointer;
       font-family: 'Noto Sans KR', sans-serif;
       font-size: 13px; font-weight: 500;
@@ -78,11 +78,37 @@
       padding: 6px 14px; border-radius: 8px;
       transition: background 0.15s, color 0.15s;
       white-space: nowrap;
+      display: flex; align-items: center; gap: 4px;
     }
-    .nav-tabs button:hover { background: var(--pale); color: var(--navy); }
-    .nav-tabs button.active {
-      background: var(--pale); color: var(--navy); font-weight: 700;
+    .nav-tabs > li > button:hover { background: var(--pale); color: var(--navy); }
+    .nav-tabs > li > button.active { background: var(--pale); color: var(--navy); font-weight: 700; }
+    .nav-tabs > li > button .nav-chevron { font-size: 16px; transition: transform 0.2s; }
+
+    /* Dropdown */
+    .nav-dropdown { position: relative; }
+    .nav-dropdown:hover > button .nav-chevron { transform: rotate(180deg); }
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute; top: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%);
+      background: white; border: 1px solid var(--border);
+      border-radius: 14px; padding: 6px;
+      list-style: none; min-width: 172px;
+      box-shadow: 0 12px 32px rgba(13,43,110,0.12);
+      z-index: 300;
     }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu li button {
+      width: 100%; text-align: left;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 13px; font-weight: 500; color: var(--text-mid);
+      padding: 9px 16px; border-radius: 9px;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; display: block;
+    }
+    .nav-dropdown-menu li button:hover { background: var(--pale); color: var(--navy); }
+    .nav-dropdown-menu li button.active { background: var(--pale); color: var(--navy); font-weight: 700; }
     .nav-cta {
       font-size: 13px; font-weight: 600; color: var(--navy);
       border: 1.5px solid var(--navy); padding: 7px 18px;
@@ -360,10 +386,15 @@
     </a>
     <ul class="nav-tabs">
       <li><button onclick="showPage('main')" class="active" id="tab-main">전체 소개</button></li>
-      <li><button onclick="showPage('part1')" id="tab-part1">Part 1 · 영어시험</button></li>
-      <li><button onclick="showPage('part2')" id="tab-part2">Part 2 · 앱티마이저</button></li>
-      <li><button onclick="showPage('part3')" id="tab-part3">Part 3 · 부모교육</button></li>
-      <li><button onclick="showPage('part4')" id="tab-part4">Part 4 · 한국어</button></li>
+      <li class="nav-dropdown">
+        <button id="tab-solutions">솔루션 소개 <span class="material-symbols-rounded nav-chevron">expand_more</span></button>
+        <ul class="nav-dropdown-menu">
+          <li><button onclick="showPage('part1')" id="tab-part1">영어시험</button></li>
+          <li><button onclick="showPage('part2')" id="tab-part2">앱티마이저</button></li>
+          <li><button onclick="showPage('part3')" id="tab-part3">부모교육</button></li>
+          <li><button onclick="showPage('part4')" id="tab-part4">한국어</button></li>
+        </ul>
+      </li>
     </ul>
     <a href="#contact" class="nav-cta">도입 문의하기</a>
   </div>
@@ -1166,9 +1197,14 @@
 <script>
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-tabs button, .nav-dropdown-menu button').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + id).classList.add('active');
-    document.getElementById('tab-' + id).classList.add('active');
+    if (id === 'main') {
+      document.getElementById('tab-main').classList.add('active');
+    } else {
+      document.getElementById('tab-solutions').classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 </script>
